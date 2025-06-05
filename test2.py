@@ -57,12 +57,12 @@ class MineSweeper:
 
     def show_main_menu(self):
         self.clear_window()
-        self.window.title("CATEP")
+        self.window.title("CAПEP")
 
         menu_frame = tk.Frame(self.window)
         menu_frame.pack(expand=True)
 
-        title_label = tk.Label(menu_frame, text="CATEP", font=("Arial", 24, "bold"))
+        title_label = tk.Label(menu_frame, text="CAПEP", font=("Arial", 24, "bold"))
         title_label.pack(pady=20)
 
         play_btn = tk.Button(menu_frame, text="ИГРАТЬ", font=("Arial", 16),
