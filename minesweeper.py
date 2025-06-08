@@ -87,15 +87,15 @@ class MineSweeper:
         title_label = tk.Label(diff_frame, text="Выберите уровень сложности", font=("Arial", 20, "bold"))
         title_label.pack(pady=30)
 
-        easy_btn = tk.Button(diff_frame, text="Лёгкий (8x8, 10 мин)", font=("Arial", 16),
+        easy_btn = tk.Button(diff_frame, text="Лёгкий (8x8)", font=("Arial", 16),
                              command=lambda: self.set_difficulty(8, 8, 10), width=20, height=2)
         easy_btn.pack(pady=10)
 
-        medium_btn = tk.Button(diff_frame, text="Средний (12x12, 24 мины)", font=("Arial", 16),
+        medium_btn = tk.Button(diff_frame, text="Средний (12x12)", font=("Arial", 16),
                                command=lambda: self.set_difficulty(12, 12, 24), width=20, height=2)
         medium_btn.pack(pady=10)
 
-        hard_btn = tk.Button(diff_frame, text="Сложный (16x16, 40 мин)", font=("Arial", 16),
+        hard_btn = tk.Button(diff_frame, text="Сложный (16x16)", font=("Arial", 16),
                              command=lambda: self.set_difficulty(16, 16, 40), width=20, height=2)
         hard_btn.pack(pady=10)
 
@@ -160,7 +160,84 @@ class MineSweeper:
         close_btn = tk.Button(rules_frame, text="Закрыть",
                               font=("Arial", 14), width=15,
                               command=rules_window.destroy)
-        close_btn.pack(pady=20)
+        close_btn.place(x=450, y=650)
+
+    def show_win_window(self):
+        win_window = tk.Toplevel(self.window)
+        win_window.title("Победа!")
+        win_window.geometry("400x300")
+        win_window.resizable(False, False)
+
+        # Центрирование окна
+        window_width = self.window.winfo_width()
+        window_height = self.window.winfo_height()
+        window_x = self.window.winfo_x()
+        window_y = self.window.winfo_y()
+
+        win_window.geometry(f"+{window_x + window_width // 2 - 200}+{window_y + window_height // 2 - 150}")
+
+        # Главный фрейм
+        main_frame = tk.Frame(win_window)
+        main_frame.pack(expand=True, fill=tk.BOTH, padx=20, pady=20)
+
+        # Заголовок ПОБЕДА
+        title_label = tk.Label(main_frame, text="ПОБЕДА!",
+                               font=("Arial", 24, "bold"), fg="green")
+        title_label.pack(pady=20)
+
+        # Время прохождения
+        elapsed = int(time.time() - self.start_time)
+        time_label = tk.Label(main_frame,
+                              text=f"Время прохождения: {elapsed} секунд",
+                              font=("Arial", 14))
+        time_label.pack(pady=10)
+
+        # Кнопка возврата
+        back_btn = tk.Button(main_frame, text="Вернуться в главное меню",
+                             font=("Arial", 14), width=25,
+                             command=lambda: [win_window.destroy(), self.show_main_menu()])
+        back_btn.pack(pady=20)
+
+        # Фокус на новом окне
+        win_window.grab_set()
+
+    def show_lose_window(self):
+        lose_window = tk.Toplevel(self.window)
+        lose_window.title("Поражение")
+        lose_window.geometry("400x300")
+        lose_window.resizable(False, False)
+
+        # Центрирование окна
+        window_width = self.window.winfo_width()
+        window_height = self.window.winfo_height()
+        window_x = self.window.winfo_x()
+        window_y = self.window.winfo_y()
+
+        lose_window.geometry(f"+{window_x + window_width // 2 - 200}+{window_y + window_height // 2 - 150}")
+
+        # Главный фрейм
+        main_frame = tk.Frame(lose_window)
+        main_frame.pack(expand=True, fill=tk.BOTH, padx=20, pady=20)
+
+        # Заголовок ПОРАЖЕНИЕ
+        title_label = tk.Label(main_frame, text="ПОРАЖЕНИЕ",
+                               font=("Arial", 24, "bold"), fg="red")
+        title_label.pack(pady=20)
+
+        # Сообщение
+        message_label = tk.Label(main_frame,
+                                 text="Вы наступили на мину!",
+                                 font=("Arial", 14))
+        message_label.pack(pady=10)
+
+        # Кнопка возврата
+        back_btn = tk.Button(main_frame, text="Вернуться в главное меню",
+                             font=("Arial", 14), width=25,
+                             command=lambda: [lose_window.destroy(), self.show_main_menu()])
+        back_btn.pack(pady=20)
+
+        # Фокус на новом окне
+        lose_window.grab_set()
 
     def start_game(self):
         self.clear_window()
@@ -184,9 +261,9 @@ class MineSweeper:
 
         # Сложность
         difficulty_text = "ЛЁГКАЯ" if self.MINES == 10 else "СРЕДНЯЯ" if self.MINES == 24 else "СЛОЖНАЯ"
-        difficulty_label = tk.Label(top_frame, text=f"СЛОЖНОСТЬ: {difficulty_text}",
+        difficulty_label = tk.Label(main_frame, text=f"СЛОЖНОСТЬ: {difficulty_text}",
                                     font=("Arial", 14))
-        difficulty_label.pack(side=tk.LEFT, padx=20)
+        difficulty_label.place(x=10, y=725)
 
         # Счётчик флажков
         self.flags_label = tk.Label(top_frame, text=f"Флагов: {self.flags_left}/{self.MINES}",
@@ -194,9 +271,9 @@ class MineSweeper:
         self.flags_label.pack(side=tk.LEFT)
 
         # Кнопка возврата
-        back_btn = tk.Button(top_frame, text="Вернуться в главное меню",
+        back_btn = tk.Button(main_frame, text="Вернуться в главное меню",
                              font=("Arial", 12), command=self.show_main_menu)
-        back_btn.pack(side=tk.RIGHT)
+        back_btn.place(x=975, y=725)
 
         # Фрейм для игрового поля
         game_frame = tk.Frame(main_frame)
@@ -247,7 +324,7 @@ class MineSweeper:
         if correct_flags == self.MINES or opened_cells == (self.ROW * self.COLUMNS - self.MINES):
             self.timer_running = False
             self.IS_GAME_OVER = True
-            showinfo('Победа!', 'Поздравляем, вы выиграли!')
+            self.show_win_window()
             self.open_all_buttons()
 
     def open_all_buttons(self):
@@ -296,7 +373,7 @@ class MineSweeper:
             clicked_button.is_open = True
             self.IS_GAME_OVER = True
             self.timer_running = False
-            showinfo('Game over', 'Вы проиграли')
+            self.show_lose_window()
             for i in range(1, self.ROW + 1):
                 for j in range(1, self.COLUMNS + 1):
                     btn = self.buttons[i][j]
